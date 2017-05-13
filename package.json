@@ -1,17 +1,32 @@
 {
   "name": "foxlab",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "dependencies": {
-    "google-tts-api": "0.0.1",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "google-tts-api": "^0.0.1",
     "http": "^0.0.0",
-    "node-google-text-to-speech": "^0.1.0"
+    "mongoose": "^4.9.8",
+    "node-rest-client": "^3.1.0",
+    "prompt": "^1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon main.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "vincent-heng",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vincent-heng/foxlab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vincent-heng/foxlab/issues"
+  },
+  "homepage": "https://github.com/vincent-heng/foxlab#readme",
+  "description": ""
 }
