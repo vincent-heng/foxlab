@@ -42,7 +42,7 @@ var toAudio = function(textToSay) { // Returns an URL .mp3 : https://translate.g
 var queryAI = function(userRequest) {
     var args = {
         parameters: { v: "10/05/2017", q: userRequest }, // TODO replace with current date
-        headers: { "Authorization": config.witai.authorization }
+        headers: { "Authorization": "Bearer " + config.witai.authorization }
     };
 
     client.registerMethod("queryAI", config.witai.url, "GET");
