@@ -4,6 +4,7 @@ var googleTTS = require('google-tts-api');
 var mongoose = require('mongoose');
 var log = require('log');
 var Client = require('node-rest-client').Client; // https://www.npmjs.com/package/node-rest-client
+const winston = require('winston');
 
 var config = require('../config');
 
@@ -29,12 +30,11 @@ exports.requestByVoice = function(req, res) {
 var toAudio = function(textToSay) { // Returns an URL .mp3 : https://translate.google.com/translate_tts?...
     googleTTS(textToSay, config.googletts.lang, config.googletts.pitch)   // speed normal = 1 (default), slow = 0.24
     .then(function (url) {
-      console.log(url);
+      winston.debug(url);
       return url;
     })
     .catch(function (err) {
-        console.log("TTS error");
-        console.error(err.stack);
+        winston.error("TTS error"+err.stack);
     });
 };
 
@@ -48,20 +48,20 @@ var queryAI = function(userRequest) {
     client.registerMethod("queryAI", config.witai.url, "GET");
 
     client.methods.queryAI(args, function (data, response) {
-        console.log(data);
+        winston.debug(data);
         if (!data.entities) {
             var botAnswer = "I'm a little bit confused. Maybe you forgot to specify the authentication key?";
-            console.log(botAnswer);
+            winston.debug(botAnswer);
             toAudio(botAnswer);
             return;
         }
 
         // parsed response body as js object
-        console.log(data.entities);
+        winston.debug(data.entities);
 
         if (!data.entities.intent || data.entities.intent.length == 0) {
             var botAnswer = "I don't understand your request!"
-            console.log(botAnswer);
+            winston.debug(botAnswer);
             toAudio(botAnswer);
             return;
         }

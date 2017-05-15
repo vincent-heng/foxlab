@@ -2,8 +2,11 @@ var prompt = require('prompt'); // https://www.npmjs.com/package/prompt
 var log = require('log');
 var express = require('express');
 var bodyParser = require('body-parser');
+const winston = require('winston');
 
 var config = require('./config');
+
+winston.level = config.log.level;
 
 var app = express();
 var port = process.env.PORT || config.foxlab.port;
@@ -15,4 +18,4 @@ var routes = require('./routes/routes');
 routes(app);
 
 app.listen(port);
-console.log('Foxlab API server started on: ' + port);
+winston.info('Foxlab API server started on: ' + port);
