@@ -3,13 +3,12 @@
 var googleTTS = require('google-tts-api');
 var mongoose = require('mongoose');
 var log = require('log');
-var Client = require('node-rest-client').Client; // https://www.npmjs.com/package/node-rest-client
 const winston = require('winston');
 var fs = require('fs');
+var request = require('request');
 
 var config = require('../config');
 
-var client = new Client();
 
 exports.requestByText = function(req, res) {
     var userRequest = req.query;
@@ -47,32 +46,50 @@ var toAudio = function(textToSay) { // Returns an URL .mp3 : https://translate.g
     });
 };
 
-// FIXME find a way to send the audio file with --data-binary
 var queryAIVoice = function(userRequest) {
-  var args = {
-      parameters: { v: "10/05/2017", q: userRequest }, // TODO replace with current date
+  fs.readFile('sample.wav', function (err, data) { // TODO sample.wav is just a mock
+    if (err) return console.error(err);
+
+    var options = {
+      url : config.witai.speechurl,
+      body : data,
       headers: {
         "Authorization": "Bearer " + config.witai.authorization,
         "Content-Type": "audio/wav"
       }
-  };
-  client.registerMethod("queryAIVoice", config.witai.speechurl, "POST");
-  client.methods.queryAIVoice(args, function (data, response) {
-      processBotAnswer(data, response);
+    }
+
+    request.post(options, function(err, message, data) {
+          if (err) return console.error(err);
+
+          var response;
+          var parsedData = JSON.parse(data);
+
+          processBotAnswer(parsedData, response);
+    });
   });
+
 }
 
 var queryAI = function(userRequest) {
-    var args = {
-        parameters: { v: "10/05/2017", q: userRequest }, // TODO replace with current date
-        headers: { "Authorization": "Bearer " + config.witai.authorization }
-    };
+    var options = {
+      url : config.witai.messageurl,
+      qs: {q: userRequest },
+      headers: {
+        "Authorization": "Bearer " + config.witai.authorization,
+      }
+    }
 
-    client.registerMethod("queryAI", config.witai.messageurl, "GET");
+    request.get(options, function(err, message, data) {
+      if (err) return console.error(err);
 
-    client.methods.queryAI(args, function (data, response) {
-        processBotAnswer(data, response);
+      var response;
+      var parsedData = JSON.parse(data);
+
+      processBotAnswer(parsedData, response);
+
     });
+
 };
 
 var processBotAnswer = function(data, response) {
@@ -95,7 +112,7 @@ var processBotAnswer = function(data, response) {
 
     var intents = data.entities.intent;
 
-    switch(intents[0].value) {
+    switch(intents[0].value) { // TODO return the answer in response
         case "repeat_set":
             toAudio("You said: "+data.entities.message_body[0].value);
             break;

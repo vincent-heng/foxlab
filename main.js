@@ -3,6 +3,8 @@ var log = require('log');
 var express = require('express');
 var bodyParser = require('body-parser');
 const winston = require('winston');
+var fs = require('fs');
+var request = require('request');
 
 var config = require('./config');
 
