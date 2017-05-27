@@ -1,11 +1,11 @@
 Foxlab
 =====================
 
-#Introduction
+# Introduction
 
 > *Foxlab* is a REST API for home automation. It understands Text and Voice requests.
 
-#Installation Guide
+# Installation Guide
 
 Coming soon
 
